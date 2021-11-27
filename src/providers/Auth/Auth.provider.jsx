@@ -1,11 +1,11 @@
-import React, { createContext, useEffect, useContext, useReducer } from 'react';
-import PropTypes from 'prop-types';
-import loginApi from './loginApi';
+import React, { createContext, useEffect, useContext, useReducer } from "react";
+import PropTypes from "prop-types";
+import loginApi from "./loginApi";
 
-import storage from '../../utils/storage';
+import storage from "../../utils/storage";
 
 const AuthContext = createContext(null);
-const AuthStorageKey = 'REACT-CHALLENGE-AUTH';
+const AuthStorageKey = "REACT-CHALLENGE-AUTH";
 
 const initialState = {
   loading: false,
@@ -17,25 +17,25 @@ function AuthReducer(state, action) {
   const { type, payload = {} } = action;
 
   switch (type) {
-    case 'onLogin':
+    case "onLogin":
       return {
         ...state,
         loading: true,
         error: false,
       };
-    case 'onLoginSuccess':
+    case "onLoginSuccess":
       return {
         ...state,
         loading: false,
         user: payload.user,
       };
-    case 'onLoginError':
+    case "onLoginError":
       return {
         ...state,
         loading: false,
         error: payload.error,
       };
-    case 'onLoginOut':
+    case "onLoginOut":
       return {
         ...initialState,
       };
@@ -47,23 +47,25 @@ function AuthReducer(state, action) {
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(AuthReducer, {
     ...initialState,
-    user: storage.get(AuthStorageKey) ? JSON.parse(storage.get(AuthStorageKey)) : null,
+    user: storage.get(AuthStorageKey)
+      ? JSON.parse(storage.get(AuthStorageKey))
+      : null,
   });
 
-  const loginAction = () => async (username, password) => {
-    dispatch({ type: 'onLogin' });
+  const loginAction = () => async (email, password) => {
+    dispatch({ type: "onLogin" });
 
     try {
-      const user = await loginApi(username, password);
+      const user = await loginApi(email, password);
 
       dispatch({
-        type: 'onLoginSuccess',
+        type: "onLoginSuccess",
         payload: { user },
       });
       return user;
     } catch (error) {
       dispatch({
-        type: 'onLoginError',
+        type: "onLoginError",
         payload: { error: error.message },
       });
       return null;
@@ -71,7 +73,7 @@ function AuthProvider({ children }) {
   };
 
   const logoutAction = () => () => {
-    dispatch({ type: 'onLoginOut' });
+    dispatch({ type: "onLoginOut" });
   };
 
   const value = {
@@ -95,7 +97,7 @@ function AuthProvider({ children }) {
 function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within a AuthProvider');
+    throw new Error("useAuth must be used within a AuthProvider");
   }
   return context;
 }

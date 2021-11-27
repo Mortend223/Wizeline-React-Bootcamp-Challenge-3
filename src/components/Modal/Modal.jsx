@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import PropTypes from "prop-types";
 
 // Styles
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import {
   Background,
   Button,
@@ -12,13 +12,13 @@ import {
   ErrorMessage,
   ModalCard,
   ModalWrapper,
-} from './Modal.styles';
+} from "./Modal.styles";
 
 // Providers
-import { useAuth } from '../../providers/Auth';
+import { useAuth } from "../../providers/Auth";
 
-const Portal = ({ children, el = 'div' }) => {
-  const modalRoot = document.getElementById('modal');
+const Portal = ({ children, el = "div" }) => {
+  const modalRoot = document.getElementById("modal");
   const [container] = React.useState(() => {
     return document.createElement(el);
   });
@@ -34,8 +34,8 @@ const Portal = ({ children, el = 'div' }) => {
 };
 function Modal({ toggle, open }) {
   const { login, loading, error } = useAuth();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     const user = await login(username, password);
@@ -54,7 +54,7 @@ function Modal({ toggle, open }) {
               <FontAwesomeIcon
                 icon={faTimesCircle}
                 size="2x"
-                style={{ color: 'black' }}
+                style={{ color: "black" }}
                 title="close-button"
               />
             </CloseButton>
@@ -65,20 +65,20 @@ function Modal({ toggle, open }) {
                   <FontAwesomeIcon
                     icon={faTimesCircle}
                     size="1x"
-                    style={{ color: 'red' }}
+                    style={{ color: "red" }}
                     title="error-message"
                   />
                   {error}
                 </ErrorMessage>
               )}
               <div className="form-group">
-                <label htmlFor="username">
-                  <strong>username </strong>
+                <label htmlFor="email">
+                  <strong>Email </strong>
                   <input
                     required
                     type="text"
-                    id="username"
-                    onChange={(e) => setUsername(e.target.value)}
+                    id="email"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </label>
               </div>
@@ -102,7 +102,7 @@ function Modal({ toggle, open }) {
                 color="primary"
                 disabled={loading}
               >
-                {loading ? 'Login in...' : 'Login'}
+                {loading ? "Login in..." : "Login"}
               </Button>
             </section>
           </ModalCard>

@@ -10,6 +10,7 @@ import {
   faSun,
   faMoon,
   faRocket,
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -55,6 +56,9 @@ function HeaderComponent() {
 
   return (
     <HeaderWrapper isDark={isDark}>
+      <LogoLink href="#" onClick={authenticated ? deAuthenticate : toggleModal}>
+        <FontAwesomeIcon icon={faSignOutAlt} size="2x" title="session-out" />
+      </LogoLink>
       <SearchBox>
         <Input
           type="text"
@@ -71,37 +75,6 @@ function HeaderComponent() {
           title="search-input"
         />
       </SearchBox>
-      <LogoLink href="#" onClick={authenticated ? deAuthenticate : toggleModal}>
-        {authenticated ? (
-          <img src={user.avatarUrl} alt="Wizeline" />
-        ) : (
-          <FontAwesomeIcon
-            icon={faUserSecret}
-            size="2x"
-            style={{ color: "white" }}
-            title="toggle-button"
-          />
-        )}
-      </LogoLink>
-      {authenticated && location.pathname === "/" ? (
-        <MenuToggle href="/favorites">
-          <FontAwesomeIcon
-            icon={faStar}
-            size="2x"
-            style={{ color: "yellow" }}
-            title="menu-favorites"
-          />
-        </MenuToggle>
-      ) : (
-        <MenuToggle href="/">
-          <FontAwesomeIcon
-            icon={faHome}
-            size="2x"
-            style={{ color: "white" }}
-            title="menu-home"
-          />
-        </MenuToggle>
-      )}
     </HeaderWrapper>
   );
 }

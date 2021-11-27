@@ -19,6 +19,10 @@ function App() {
             <Route exact path="/">
               <HomePage />
             </Route>
+            <Route exact path="/notes">
+              <HomePage />
+            </Route>
+            <Route exact path="/archived"></Route>
             <Route path="*">
               <NotFound />
             </Route>

@@ -1,20 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
 // Provider
-import AuthProvider from './providers/Auth/Auth.provider';
-import UserProvider from './providers/DataUser/DataUser.provider';
+import AuthProvider from "./providers/Auth/Auth.provider";
+import UserProvider from "./providers/DataUser/DataUser.provider";
 
-import App from './components/App';
-import './global.css';
+import App from "./components/App";
+import "./global.css";
 
 ReactDOM.render(
   <AuthProvider>
-    <UserProvider>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </UserProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
   </AuthProvider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );

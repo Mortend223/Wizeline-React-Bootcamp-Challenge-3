@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 // Components
-import Modal from '../Modal/Modal';
+import Modal from "../Modal/Modal";
 
 // Providers
-import { useData } from '../../providers/DataGlobal/DataGlobal.provider';
+import { useData } from "../../providers/DataGlobal/DataGlobal.provider";
 
-import MainContainer from './Layout.styles';
+import MainContainer from "./Layout.styles";
 
 function Layout({ children }) {
   const { isDark, isOpen, toggleModal } = useData();
