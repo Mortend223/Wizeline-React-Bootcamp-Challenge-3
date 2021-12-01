@@ -8,9 +8,11 @@ import { NoteList } from "../../components/Layout/Notes/NoteList.component";
 
 // Providers
 import { useAuth } from "../../providers/Auth/Auth.provider";
+import { useData } from "../../providers/DataGlobal/DataGlobal.provider";
 
 function HomePage() {
-  const { authenticated, logout, user } = useAuth();
+  const { authenticated } = useAuth();
+  const { EditingNotes, Notes } = useData();
   return !authenticated ? (
     <>
       <h1>Welcome!</h1>
@@ -19,8 +21,11 @@ function HomePage() {
   ) : (
     <>
       <HeaderComponent />
-      <Note />
-      <NoteList />
+      {EditingNotes.length == 0 && <Note key="new-note" />}
+      {EditingNotes.map((note) => (
+        <Note key={EditingNotes[0].id} note={note} />
+      ))}
+      <NoteList notes={Notes} />
     </>
   );
 }

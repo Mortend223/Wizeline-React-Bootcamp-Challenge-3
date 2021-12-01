@@ -1,13 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
+import { useData } from "../../../providers/DataGlobal/DataGlobal.provider";
 
 // Components
 import Note from "./Note.component";
 
-// Providers
-import { useData } from "../../../providers/DataGlobal/DataGlobal.provider";
+// Styles
+import { NoteListWrapper } from "./Note.styles";
 
-export const NoteList = () => {
-  const { Notes } = useData();
-  console.log(Notes);
-  return Notes.map((n) => <Note key={n.id} note={n} />);
+export const NoteList = ({ notes = null }) => {
+  const { search } = useData();
+  return (
+    <NoteListWrapper>
+      {notes
+        .filter(
+          (note) =>
+            note.titleNote.toLowerCase().includes(search.toLowerCase()) ||
+            note.contentNote.toLowerCase().includes(search.toLowerCase())
+        )
+        .map((n) => (
+          <Note key={n.id} note={n} />
+        ))}
+    </NoteListWrapper>
+  );
 };

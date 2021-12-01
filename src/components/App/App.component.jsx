@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 // Pages
 import HomePage from "../../pages/Home";
+import ArchivedPage from "../../pages/Archived/Archived.page";
 import NotFound from "../../pages/NotFound";
 import Private from "../Private";
 import Layout from "../Layout";
@@ -22,7 +23,9 @@ function App() {
             <Route exact path="/notes">
               <HomePage />
             </Route>
-            <Route exact path="/archived"></Route>
+            <Private exact path="/archived">
+              <ArchivedPage />
+            </Private>
             <Route path="*">
               <NotFound />
             </Route>

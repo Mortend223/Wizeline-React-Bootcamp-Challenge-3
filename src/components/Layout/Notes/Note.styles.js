@@ -14,7 +14,6 @@ const handleColorType = (backColor) => {
 };
 
 export const BackcolorSection = styled.div`
-  display: inline-block;
   svg {
     cursor: pointer;
     filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5));
@@ -22,26 +21,30 @@ export const BackcolorSection = styled.div`
   }
 `;
 export const Button = styled.button`
-  align-items: center;
+  align-self: flex-end;
   background-color: transparent;
   border: none;
   cursor: pointer;
-  display: flex;
   margin-left: auto;
-  margin-right: 0px;
-  text-align: center;
+  order: 1;
+  text-align: right;
   text-decoration: none;
   svg {
     color: black;
     margin-left: 10px;
     &:hover {
-      color: white;
+      color: gray;
     }
   }
 `;
 
 export const ButtonSection = styled.div`
   display: flex;
+`;
+
+export const ConfigSection = styled.div`
+  margin-left: auto;
+  margin-right: 0px;
 `;
 
 export const InputNoteWrapper = styled.div`
@@ -53,11 +56,23 @@ export const InputNoteWrapper = styled.div`
   -moz-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.75);
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 1.5rem;
+  height: ${(props) => (props.isInputOpen || props.isList ? "auto" : "80px")};
   justify-content: space-between;
-  max-width: 600px;
+  max-width: ${(props) => (props.isList ? "350px" : "600px")};
   padding: 20px;
-  margin: 25px auto;
+  margin: 25px auto 25px ${(props) => (props.isList ? "0px" : "auto")};
+  overflow: ${(props) =>
+    props.isInputOpen || props.isList ? "auto" : "hidden"};
   text-align: left;
+  width: 100%;
+  p {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 16px;
+  }
+  strong {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 18px;
+  }
   input,
   textarea {
     background-color: transparent;
@@ -77,4 +92,19 @@ export const InputNoteWrapper = styled.div`
   @media only screen and (max-width: 768px) {
     max-width: 300px;
   }
+`;
+
+export const NoteListWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  /* div {
+    margin-right: auto;
+    margin-left: 0px;
+    max-width: 350px;
+    @media only screen and (max-width: 768px) {
+      margin-right: auto;
+      margin-left: auto;
+    }
+  } */
 `;

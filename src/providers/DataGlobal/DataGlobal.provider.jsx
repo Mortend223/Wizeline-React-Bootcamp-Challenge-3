@@ -9,6 +9,8 @@ const DataContext = createContext(null);
 const UserStorageKey = "REACT-CHALLENGE-3-NOTES";
 
 const initialState = {
+  ArchivedNotes: [],
+  EditingNotes: [],
   Notes: [],
   isDark: true,
   isDarkTheme: true,
@@ -23,8 +25,13 @@ function getUserStorageKey(user) {
 function DataReducer(state, action) {
   const { type, payload = {} } = action;
 
-  console.log(payload.note, state.Notes);
   switch (type) {
+    case "archiveNote":
+      return {
+        ...state,
+        ArchivedNotes: [...state.ArchivedNotes, payload.note],
+        Notes: state.Notes.filter((e) => e.id !== payload.note.id),
+      };
     case "updateSearch": {
       return { ...state, search: action.term };
     }
@@ -39,9 +46,21 @@ function DataReducer(state, action) {
         ...state,
         Notes: [...state.Notes, payload.note],
       };
+    case "editNote":
+      return {
+        ...state,
+        Notes: state.Notes.filter((e) => e.id !== payload.note.id),
+        EditingNotes: [...state.EditingNotes, payload.note],
+      };
     case "removeNote":
       return {
         ...state,
+        ArchivedNotes: state.ArchivedNotes.filter(
+          (e) => e.id !== payload.note.id
+        ),
+        EditingNotes: state.EditingNotes.filter(
+          (e) => e.id !== payload.note.id
+        ),
         Notes: state.Notes.filter((e) => e.id !== payload.note.id),
       };
     case "setTheme":
@@ -63,6 +82,19 @@ function DataProvider({ children }) {
       : {}),
   });
 
+  const isArchivedNote = (note) => {
+    return state.Notes.find((n) => n.id === note.id);
+  };
+  const isEditingNote = (note) => {
+    return state.EditingNotes.find((n) => n.id === note.id);
+  };
+
+  const addArchivedNote = () => (note) => {
+    dispatch({
+      type: "archiveNote",
+      payload: { note },
+    });
+  };
   const onChangeInput = () => (value) => {
     dispatch({ type: "updateSearch", term: value });
   };
@@ -75,6 +107,12 @@ function DataProvider({ children }) {
   const addNote = () => (note) => {
     dispatch({
       type: "addNote",
+      payload: { note },
+    });
+  };
+  const onEditNote = () => (note) => {
+    dispatch({
+      type: "editNote",
       payload: { note },
     });
   };
@@ -93,12 +131,16 @@ function DataProvider({ children }) {
 
   const value = {
     ...state,
-    onChangeInput: onChangeInput(dispatch),
-    toggleModal: toggleModal(dispatch),
-    toggleTheme: toggleTheme(dispatch),
+    isArchivedNote,
+    isEditingNote,
+    addArchivedNote: addArchivedNote(dispatch),
     addNote: addNote(dispatch),
+    onChangeInput: onChangeInput(dispatch),
+    onEditNote: onEditNote(dispatch),
     removeNote: removeNote(dispatch),
     setTheme: setTheme(dispatch),
+    toggleModal: toggleModal(dispatch),
+    toggleTheme: toggleTheme(dispatch),
   };
 
   useEffect(() => {
@@ -108,11 +150,19 @@ function DataProvider({ children }) {
     storage.set(
       getUserStorageKey(user),
       JSON.stringify({
+        ArchivedNotes: state.ArchivedNotes,
+        EditingNotes: state.EditingNotes,
         Notes: state.Notes,
         isDarkTheme: state.isDarkTheme,
       })
     );
-  }, [state.Notes, user, state.isDarkTheme]);
+  }, [
+    state.ArchivedNotes,
+    state.EditingNotes,
+    state.Notes,
+    user,
+    state.isDarkTheme,
+  ]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

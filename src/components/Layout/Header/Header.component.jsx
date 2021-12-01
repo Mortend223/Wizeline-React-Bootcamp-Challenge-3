@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 // Styles
 import {
@@ -30,7 +30,8 @@ function HeaderComponent() {
   const { push } = useHistory();
   const location = useLocation();
   const { authenticated, logout, user } = useAuth();
-  const { isDark, onChangeInput, toggleModal, toggleTheme } = useData();
+  const { ArchivedNotes, isDark, onChangeInput, toggleModal, toggleTheme } =
+    useData();
   const [searchTerm, setSearch] = useState("");
 
   const handleSearchChanged = (event) => {
@@ -59,6 +60,19 @@ function HeaderComponent() {
       <LogoLink href="#" onClick={authenticated ? deAuthenticate : toggleModal}>
         <FontAwesomeIcon icon={faSignOutAlt} size="2x" title="session-out" />
       </LogoLink>
+      {location.pathname === "/archived" ? (
+        <Link to="/">Notes</Link>
+      ) : (
+        ArchivedNotes.length > 0 && <Link to="/archived">Archived</Link>
+      )}
+      <ButtonToggle onClick={toggleTheme} name="darkMode">
+        <FontAwesomeIcon
+          icon={isDark ? faMoon : faSun}
+          size="6x"
+          style={{ color: "white" }}
+          title="toggle-button"
+        />
+      </ButtonToggle>
       <SearchBox>
         <Input
           type="text"
@@ -66,7 +80,7 @@ function HeaderComponent() {
           value={searchTerm}
           onChange={handleSearchChanged}
           onKeyDown={handleKeyDown}
-          placeholder="Wizeline"
+          placeholder="Search..."
         />
         <FontAwesomeIcon
           icon={searchIcon}
