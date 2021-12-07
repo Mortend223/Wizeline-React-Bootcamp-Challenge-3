@@ -35,9 +35,6 @@ function DataReducer(state, action) {
     case "updateSearch": {
       return { ...state, search: action.term };
     }
-    case "toggleModal": {
-      return { ...state, isOpen: !state.isOpen };
-    }
     case "updateTheme": {
       return { ...state, isDark: !state.isDark };
     }
@@ -98,9 +95,6 @@ function DataProvider({ children }) {
   const onChangeInput = () => (value) => {
     dispatch({ type: "updateSearch", term: value });
   };
-  const toggleModal = () => () => {
-    dispatch({ type: "toggleModal" });
-  };
   const toggleTheme = () => () => {
     dispatch({ type: "updateTheme" });
   };
@@ -139,7 +133,6 @@ function DataProvider({ children }) {
     onEditNote: onEditNote(dispatch),
     removeNote: removeNote(dispatch),
     setTheme: setTheme(dispatch),
-    toggleModal: toggleModal(dispatch),
     toggleTheme: toggleTheme(dispatch),
   };
 

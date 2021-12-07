@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Component Should show Login Component 1`] = `undefined`;
+
+exports[`Login Component Should show Login Component with Error 1`] = `undefined`;
+
+exports[`Login Component Should show Login Component with Loading button 1`] = `undefined`;
+
+exports[`Login Component Should show Pass Change 1`] = `undefined`;

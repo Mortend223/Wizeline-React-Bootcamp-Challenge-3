@@ -14,12 +14,12 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    const user = await login(email, password);
+    await login(email, password);
   };
   return (
     <Section>
       {error && (
-        <ErrorMessage class="error-msg">
+        <ErrorMessage className="error-msg">
           <FontAwesomeIcon
             icon={faTimesCircle}
             size="1x"

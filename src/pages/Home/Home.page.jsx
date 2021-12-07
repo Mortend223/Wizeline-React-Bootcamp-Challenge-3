@@ -4,7 +4,7 @@ import React from "react";
 import HeaderComponent from "../../components/Layout/Header/Header.component";
 import Login from "../../components/Layout/Login/Login.component";
 import Note from "../../components/Layout/Notes/Note.component";
-import { NoteList } from "../../components/Layout/Notes/NoteList.component";
+import NoteList from "../../components/Layout/Notes/NoteList.component";
 
 // Providers
 import { useAuth } from "../../providers/Auth/Auth.provider";
@@ -21,9 +21,9 @@ function HomePage() {
   ) : (
     <>
       <HeaderComponent />
-      {EditingNotes.length == 0 && <Note key="new-note" />}
+      {EditingNotes.length === 0 && <Note key="new-note" />}
       {EditingNotes.map((note) => (
-        <Note key={EditingNotes[0].id} note={note} />
+        <Note key={note.id} note={note} />
       ))}
       <NoteList notes={Notes} />
     </>

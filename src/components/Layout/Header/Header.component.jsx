@@ -4,12 +4,8 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 // Styles
 import {
   faSearch as searchIcon,
-  faUserSecret,
-  faStar,
-  faHome,
   faSun,
   faMoon,
-  faRocket,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +14,6 @@ import {
   HeaderWrapper,
   Input,
   LogoLink,
-  MenuToggle,
   SearchBox,
 } from "./Header.styles";
 
@@ -29,9 +24,8 @@ import { useData } from "../../../providers/DataGlobal/DataGlobal.provider";
 function HeaderComponent() {
   const { push } = useHistory();
   const location = useLocation();
-  const { authenticated, logout, user } = useAuth();
-  const { ArchivedNotes, isDark, onChangeInput, toggleModal, toggleTheme } =
-    useData();
+  const { logout } = useAuth();
+  const { ArchivedNotes, isDark, onChangeInput, toggleTheme } = useData();
   const [searchTerm, setSearch] = useState("");
 
   const handleSearchChanged = (event) => {
@@ -48,16 +42,14 @@ function HeaderComponent() {
     }
   };
 
-  const deAuthenticate = (event) => {
-    event.preventDefault();
-    toggleTheme(true);
+  const deAuthenticate = () => {
     logout();
     push("/");
   };
 
   return (
     <HeaderWrapper isDark={isDark}>
-      <LogoLink href="#" onClick={authenticated ? deAuthenticate : toggleModal}>
+      <LogoLink href="#" onClick={deAuthenticate}>
         <FontAwesomeIcon icon={faSignOutAlt} size="2x" title="session-out" />
       </LogoLink>
       {location.pathname === "/archived" ? (

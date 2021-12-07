@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 // Components
 import HeaderComponent from "../Header.component";
@@ -13,6 +13,7 @@ jest.mock("../../../../providers/DataGlobal/DataGlobal.provider");
 
 // Mocks
 const onSearchMock = jest.fn();
+const mockChange = jest.fn();
 jest.mock("react-router-dom", () => ({
   useHistory: () => ({
     location: jest.fn(),
@@ -35,7 +36,9 @@ describe("Header Component", () => {
       search: "SomeText",
       isDark: true,
     });
-    const container = render(<HeaderComponent onChange={onSearchMock} />);
+    const container = render(
+      <HeaderComponent onChange={onSearchMock} onKeyDown={jest.fn()} />
+    );
 
     expect(container.firstChild).toMatchSnapshot();
   });
@@ -56,7 +59,7 @@ describe("Header Component", () => {
   });
   it("Should render the Session-Out icon", () => {
     useAuth.mockReturnValue({
-      authenticated: true,
+      authenticated: false,
       logout: jest.fn(),
       user: {},
     });
@@ -68,5 +71,29 @@ describe("Header Component", () => {
     render(<HeaderComponent onChange={onSearchMock} />);
 
     expect(screen.getByTitle("session-out")).toBeInTheDocument();
+  });
+  it("Should render the actions for Input", () => {
+    useAuth.mockReturnValue({
+      logout: jest.fn(),
+    });
+    useData.mockReturnValue({
+      ArchivedNotes: [],
+      onChangeInput: jest.fn(),
+      search: "SomeText",
+      isDark: false,
+    });
+    const query = "SomeText";
+    const { getByPlaceholderText } = render(<HeaderComponent />);
+    const searchInput = getByPlaceholderText(/Search.../i);
+    expect(searchInput.value).toEqual("");
+    searchInput.onChange = mockChange;
+    searchInput.onKeyDown = mockChange;
+    fireEvent.change(searchInput, { target: { value: query } });
+    fireEvent.keyDown(searchInput, {
+      key: "Enter",
+      code: "Enter",
+      charCode: 13,
+    });
+    expect(searchInput.value).toEqual(query);
   });
 });

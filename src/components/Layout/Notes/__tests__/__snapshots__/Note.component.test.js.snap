@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Note Component Should show Note Component 1`] = `undefined`;
+
+exports[`Note Component Should show Note when is not null  1`] = `undefined`;

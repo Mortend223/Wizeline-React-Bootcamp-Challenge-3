@@ -2,7 +2,7 @@ import React from "react";
 
 // Components
 import HeaderComponent from "../../components/Layout/Header/Header.component";
-import { NoteList } from "../../components/Layout/Notes/NoteList.component";
+import NoteList from "../../components/Layout/Notes/NoteList.component";
 
 // Providers
 import { useData } from "../../providers/DataGlobal/DataGlobal.provider";

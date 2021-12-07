@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 // Styles
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +7,6 @@ import {
   faArchive,
   faCircle,
   faEdit,
-  faEraser,
   faSave,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -27,7 +27,6 @@ function Note({ note = null }) {
     addArchivedNote,
     isArchivedNote,
     isEditingNote,
-    isDark,
     onEditNote,
     removeNote,
   } = useData();
@@ -36,16 +35,7 @@ function Note({ note = null }) {
   const [backColor, setBackColor] = useState(note?.backColor ?? "");
   const [isInputOpen, setInputOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (note) {
-  //     setTitleNote(note.titleNote);
-  //     setContentNote(note.contentNote);
-  //     setBackColor(note.backColor);
-  //   }
-  // }, [note]);
-
   const handleTagColor = (c) => () => {
-    console.log(c);
     setBackColor(c);
   };
 
@@ -73,15 +63,20 @@ function Note({ note = null }) {
   };
 
   const handleEditNote = async () => {
-    setInputOpen(true);
     onEditNote(note);
   };
+  useEffect(() => {
+    if (!note) {
+      return;
+    }
+    setInputOpen(true);
+  }, [isInputOpen]);
 
   return (
     <InputNoteWrapper
+      backColor={backColor}
       isInputOpen={isInputOpen}
       isList={note !== null && !isEditingNote(note)}
-      backColor={backColor}
     >
       <div className="form-group">
         {note === null || isEditingNote(note) ? (
@@ -166,4 +161,10 @@ function Note({ note = null }) {
   );
 }
 
+Note.propTypes = {
+  note: PropTypes.shape(PropTypes.object),
+};
+Note.defaultProps = {
+  note: null,
+};
 export default Note;
