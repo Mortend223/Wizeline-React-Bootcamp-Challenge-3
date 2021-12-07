@@ -1,14 +1,14 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const HeaderWrapper = styled.div`
   align-items: center;
-  background-color: ${(props) => (props.isDark ? 'black' : '#f0575d')};
+  background-color: ${(props) => (props.isDark ? "black" : "#f0575d")};
   border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
-  color: '#FFFFFF';
+  color: "#FFFFFF";
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
-  padding: 10px 5%;
+  padding: 10px;
   width: 100%;
 
   p {
@@ -17,24 +17,17 @@ export const HeaderWrapper = styled.div`
 `;
 
 export const LogoLink = styled.div`
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+  height: 40px;
   margin: 0px 20px;
   width: 40px;
-  height: 40px;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-  font-size: 1.25rem;
-  align-items: center;
-  flex-shrink: 0;
-  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-  line-height: 1;
-  user-select: none;
-  border-radius: 50%;
-  justify-content: center;
-  img {
-    color: transparent;
-    max-width: 50px;
-    height: auto;
+  svg {
+    color: white;
+    &:hover {
+      color: firebrick;
+    }
   }
 `;
 

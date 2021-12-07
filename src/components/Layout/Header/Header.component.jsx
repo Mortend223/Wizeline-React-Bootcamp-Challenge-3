@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 // Styles
 import {
   faSearch as searchIcon,
-  faUserSecret,
-  faStar,
-  faHome,
   faSun,
   faMoon,
-  faRocket,
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,7 +14,6 @@ import {
   HeaderWrapper,
   Input,
   LogoLink,
-  MenuToggle,
   SearchBox,
 } from "./Header.styles";
 
@@ -28,8 +24,8 @@ import { useData } from "../../../providers/DataGlobal/DataGlobal.provider";
 function HeaderComponent() {
   const { push } = useHistory();
   const location = useLocation();
-  const { authenticated, logout, user } = useAuth();
-  const { isDark, onChangeInput, toggleModal, toggleTheme } = useData();
+  const { logout } = useAuth();
+  const { ArchivedNotes, isDark, onChangeInput, toggleTheme } = useData();
   const [searchTerm, setSearch] = useState("");
 
   const handleSearchChanged = (event) => {
@@ -46,15 +42,29 @@ function HeaderComponent() {
     }
   };
 
-  const deAuthenticate = (event) => {
-    event.preventDefault();
-    toggleTheme(true);
+  const deAuthenticate = () => {
     logout();
     push("/");
   };
 
   return (
     <HeaderWrapper isDark={isDark}>
+      <LogoLink href="#" onClick={deAuthenticate}>
+        <FontAwesomeIcon icon={faSignOutAlt} size="2x" title="session-out" />
+      </LogoLink>
+      {location.pathname === "/archived" ? (
+        <Link to="/">Notes</Link>
+      ) : (
+        ArchivedNotes.length > 0 && <Link to="/archived">Archived</Link>
+      )}
+      <ButtonToggle onClick={toggleTheme} name="darkMode">
+        <FontAwesomeIcon
+          icon={isDark ? faMoon : faSun}
+          size="6x"
+          style={{ color: "white" }}
+          title="toggle-button"
+        />
+      </ButtonToggle>
       <SearchBox>
         <Input
           type="text"
@@ -62,7 +72,7 @@ function HeaderComponent() {
           value={searchTerm}
           onChange={handleSearchChanged}
           onKeyDown={handleKeyDown}
-          placeholder="Wizeline"
+          placeholder="Search..."
         />
         <FontAwesomeIcon
           icon={searchIcon}
@@ -71,37 +81,6 @@ function HeaderComponent() {
           title="search-input"
         />
       </SearchBox>
-      <LogoLink href="#" onClick={authenticated ? deAuthenticate : toggleModal}>
-        {authenticated ? (
-          <img src={user.avatarUrl} alt="Wizeline" />
-        ) : (
-          <FontAwesomeIcon
-            icon={faUserSecret}
-            size="2x"
-            style={{ color: "white" }}
-            title="toggle-button"
-          />
-        )}
-      </LogoLink>
-      {authenticated && location.pathname === "/" ? (
-        <MenuToggle href="/favorites">
-          <FontAwesomeIcon
-            icon={faStar}
-            size="2x"
-            style={{ color: "yellow" }}
-            title="menu-favorites"
-          />
-        </MenuToggle>
-      ) : (
-        <MenuToggle href="/">
-          <FontAwesomeIcon
-            icon={faHome}
-            size="2x"
-            style={{ color: "white" }}
-            title="menu-home"
-          />
-        </MenuToggle>
-      )}
     </HeaderWrapper>
   );
 }

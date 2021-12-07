@@ -1,72 +1,169 @@
-import React, { createContext, useContext, useReducer } from 'react';
-import PropTypes from 'prop-types';
+import React, { createContext, useContext, useEffect, useReducer } from "react";
+import PropTypes from "prop-types";
+import storage from "../../utils/storage";
 
 // Providers
-import { useAuth } from '../Auth/Auth.provider';
-import { useUserContext } from '../DataUser/DataUser.provider';
+import { useAuth } from "../Auth/Auth.provider";
 
 const DataContext = createContext(null);
+const UserStorageKey = "REACT-CHALLENGE-3-NOTES";
+
+const initialState = {
+  ArchivedNotes: [],
+  EditingNotes: [],
+  Notes: [],
+  isDark: true,
+  isDarkTheme: true,
+  isOpen: false,
+  search: "",
+};
+
+function getUserStorageKey(user) {
+  return user ? `${UserStorageKey}-${user.id}` : "";
+}
 
 function DataReducer(state, action) {
-  switch (action.type) {
-    case 'updateSearch': {
+  const { type, payload = {} } = action;
+
+  switch (type) {
+    case "archiveNote":
+      return {
+        ...state,
+        ArchivedNotes: [...state.ArchivedNotes, payload.note],
+        Notes: state.Notes.filter((e) => e.id !== payload.note.id),
+      };
+    case "updateSearch": {
       return { ...state, search: action.term };
     }
-    case 'toggleModal': {
-      return { ...state, isOpen: !state.isOpen };
-    }
-    case 'updateTheme': {
+    case "updateTheme": {
       return { ...state, isDark: !state.isDark };
     }
-    default: {
-      throw new Error(`Unhandled action type: ${action.type}`);
-    }
+    case "addNote":
+      return {
+        ...state,
+        Notes: [...state.Notes, payload.note],
+      };
+    case "editNote":
+      return {
+        ...state,
+        Notes: state.Notes.filter((e) => e.id !== payload.note.id),
+        EditingNotes: [...state.EditingNotes, payload.note],
+      };
+    case "removeNote":
+      return {
+        ...state,
+        ArchivedNotes: state.ArchivedNotes.filter(
+          (e) => e.id !== payload.note.id
+        ),
+        EditingNotes: state.EditingNotes.filter(
+          (e) => e.id !== payload.note.id
+        ),
+        Notes: state.Notes.filter((e) => e.id !== payload.note.id),
+      };
+    case "setTheme":
+      return {
+        ...state,
+        isDarkTheme: payload,
+      };
+    default:
+      throw new Error(`Invalid action "${type}"`);
   }
 }
 
 function DataProvider({ children }) {
-  const { authenticated } = useAuth();
-  const { isDarkTheme, setTheme } = useUserContext();
+  const { user } = useAuth();
   const [state, dispatch] = useReducer(DataReducer, {
-    favoriteVideos: [],
-    isDark: authenticated ? isDarkTheme : true,
-    isOpen: false,
-    search: 'Wizeline',
+    ...initialState,
+    ...(storage.get(getUserStorageKey(user))
+      ? JSON.parse(storage.get(getUserStorageKey(user)))
+      : {}),
   });
 
-  const onChangeInput = (value) => {
-    dispatch({ type: 'updateSearch', term: value });
+  const isArchivedNote = (note) => {
+    return state.Notes.find((n) => n.id === note.id);
   };
-  const toggleModal = () => {
-    dispatch({ type: 'toggleModal' });
-  };
-  const toggleTheme = () => {
-    if (authenticated) {
-      setTheme(state.isDark);
-    }
-    dispatch({ type: 'updateTheme' });
+  const isEditingNote = (note) => {
+    return state.EditingNotes.find((n) => n.id === note.id);
   };
 
-  return (
-    <DataContext.Provider
-      value={{
-        search: state.search,
-        isDark: state.isDark,
-        isOpen: state.isOpen,
-        onChangeInput,
-        toggleModal,
-        toggleTheme,
-      }}
-    >
-      {children}
-    </DataContext.Provider>
-  );
+  const addArchivedNote = () => (note) => {
+    dispatch({
+      type: "archiveNote",
+      payload: { note },
+    });
+  };
+  const onChangeInput = () => (value) => {
+    dispatch({ type: "updateSearch", term: value });
+  };
+  const toggleTheme = () => () => {
+    dispatch({ type: "updateTheme" });
+  };
+  const addNote = () => (note) => {
+    dispatch({
+      type: "addNote",
+      payload: { note },
+    });
+  };
+  const onEditNote = () => (note) => {
+    dispatch({
+      type: "editNote",
+      payload: { note },
+    });
+  };
+  const removeNote = () => (note) => {
+    dispatch({
+      type: "removeNote",
+      payload: { note },
+    });
+  };
+  const setTheme = () => (isDarkTheme) => {
+    dispatch({
+      type: "setTheme",
+      payload: !isDarkTheme,
+    });
+  };
+
+  const value = {
+    ...state,
+    isArchivedNote,
+    isEditingNote,
+    addArchivedNote: addArchivedNote(dispatch),
+    addNote: addNote(dispatch),
+    onChangeInput: onChangeInput(dispatch),
+    onEditNote: onEditNote(dispatch),
+    removeNote: removeNote(dispatch),
+    setTheme: setTheme(dispatch),
+    toggleTheme: toggleTheme(dispatch),
+  };
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    storage.set(
+      getUserStorageKey(user),
+      JSON.stringify({
+        ArchivedNotes: state.ArchivedNotes,
+        EditingNotes: state.EditingNotes,
+        Notes: state.Notes,
+        isDarkTheme: state.isDarkTheme,
+      })
+    );
+  }, [
+    state.ArchivedNotes,
+    state.EditingNotes,
+    state.Notes,
+    user,
+    state.isDarkTheme,
+  ]);
+
+  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 
 function useData() {
   const context = useContext(DataContext);
   if (context === undefined) {
-    throw new Error('useData must be used within a DataProvider');
+    throw new Error("useData must be used within a DataProvider");
   }
   return context;
 }

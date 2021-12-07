@@ -1,23 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
-// Components
-import Modal from '../Modal/Modal';
+import React from "react";
+import PropTypes from "prop-types";
 
 // Providers
-import { useData } from '../../providers/DataGlobal/DataGlobal.provider';
+import { useData } from "../../providers/DataGlobal/DataGlobal.provider";
 
-import MainContainer from './Layout.styles';
+import MainContainer from "./Layout.styles";
 
 function Layout({ children }) {
-  const { isDark, isOpen, toggleModal } = useData();
+  const { isDark } = useData();
 
-  return (
-    <MainContainer isDark={isDark}>
-      {children}
-      <Modal open={isOpen} toggle={toggleModal} />
-    </MainContainer>
-  );
+  return <MainContainer isDark={isDark}>{children}</MainContainer>;
 }
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
